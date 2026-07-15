@@ -4,6 +4,26 @@ Open Occupation Blueprint for **ISCO-08 3313**: Accounting Associate Professiona
 
 This repository designs a forkable OSS business for an independent accounting support practice: a document intake and archival robot manages transaction records under a governor-gated actor, so the practice keeps its own posting records instead of renting a closed bookkeeping SaaS.
 
+**Maturity: `:implemented`.** `src/accountingsupport/` implements the
+`AccountingSupportActor` as a `langgraph.graph/state-graph`
+(`accountingsupport.actor`) wired to an `Accounting Advisor`
+(`accountingsupport.advisor`) and an independent `AccountingSupportGovernor`
+(`accountingsupport.governor`), following the itonami actor pattern
+(ADR-2607011000): `:intake -> :advise -> :govern -> :decide -+-> :commit
+(:ok?) +-> :request-approval (:escalate?, human-in-the-loop interrupt)
++-> :hold (:hard?)`. 14 tests / 29 assertions green (`clojure -M:test`).
+HARD invariants (always hold, never overridable): client provenance,
+no-actuation (`:effect` must be `:propose`), a registered account
+basis for any transaction-posting proposal, the proposed transaction
+amount not exceeding the account's registered transaction-amount
+ceiling (posting beyond it is unauthorized posting, not routine
+bookkeeping), and an attached source document before any transaction
+can be posted (posting without one is an invented transaction, not
+efficient service). Always-escalate ops (human sign-off regardless of
+confidence, mapping this repo's Trust Controls in
+[`docs/business-model.md`](docs/business-model.md)):
+`:approve-over-ceiling-posting` and `:approve-period-close`.
+
 ## Robotics premise
 
 All cloud-itonami verticals are designed on the premise that a **robot performs
