@@ -1,6 +1,6 @@
 (ns accountingsupport.store
   "SSoT for the ISCO-08 3313 independent accounting support practice
-  actor (itonami actor pattern, ADR-2607011000 / CLAUDE.md Actors
+  actor (itonami actor pattern, ADR-2607011000 / AGENTS.md Actors
   section; README's 'Robotics premise' — a document intake and
   archival robot performs receipt scanning, ledger-entry filing and
   physical archival under this advisor/governor pair, which never
